@@ -3,6 +3,7 @@
 You need add file bookmarks/settings_local.py. Example file:
 ```python
 SECRET_KEY = 'TOKEN'
+DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
