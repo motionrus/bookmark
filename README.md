@@ -1,1 +1,1 @@
-# Welcome to bookmarks project. It's work on django framework.
+# Welcome to bookmarks project. It work on django.
