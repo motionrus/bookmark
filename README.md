@@ -1,20 +1,8 @@
 # Welcome to bookmarks project. It work on django.
 
 You need add file bookmarks/settings_local.py. Example file:
-```
-# SECURITY WARNING: keep the secret key used in production secret!
-
-SECRET_KEY = '%#$!s*#*fpn@oprip9hixna0v_osjvgk4ahc-%fvb7mti*t1x&'
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-
-DEBUG = True
-
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+```python
+SECRET_KEY = 'TOKEN'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -25,5 +13,11 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+```
 
+# Installing
+
+You must be use Python version 3.6.2. Install Python package with:
+```
+pip install -r requirements.txt
 ```
