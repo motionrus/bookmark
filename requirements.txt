@@ -1,2 +1,4 @@
 Django==2.0
 psycopg2==2.7.3.2
+beautifulsoup4==4.6.0
+requests==2.18.4

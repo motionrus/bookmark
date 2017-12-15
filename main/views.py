@@ -3,17 +3,24 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import BookMark
 from .forms import LinkBookMark
 from django.template import loader
+from django.utils import timezone
+import requests
+from bs4 import BeautifulSoup
 
 from django.urls import reverse
-import requests, re
+
 # Create your views here.
 
 
 def index(request):
     """return last 5 links"""
+    form = LinkBookMark()
+    if request.method == 'POST':
+        add_link(request)
     last_five_links = BookMark.objects.order_by('-pub_date')[:5]
     template = loader.get_template('main/index.html')
     context = {
+        'form': form,
         'response_links': last_five_links,
     }
     return HttpResponse(template.render(context, request))
@@ -25,17 +32,19 @@ def get_url(request, number_links):
     return HttpResponse(format_link)
 
 def add_link(request):
+    form = LinkBookMark(request.POST)
+    if form.is_valid():
+        url = (form.cleaned_data['url'])
+        r = requests.get(url)
+        site = BeautifulSoup(r.text, 'html.parser')
+        title = site.title.text
+        text = site.p.text
+        short_text =  site.p.text[:20]
+        print('timezone={}, title={}, text={}, short_text={}, '.format(timezone.now(), title, text, short_text))
+        BookMark(pub_date=timezone.now(), url=url, title=title, text=text, short_text=short_text).save()
 
-    if request.method == 'POST':
-        form = LinkBookMark(request.POST)
-        
-        if form.is_valid():
 
-            return HttpResponseRedirect('/')
-    else:
-        form = LinkBookMark()
-
-    return render(request, 'main/index.html', {'form': form})
+    return form
 
 def save_in_db(request):
     pass

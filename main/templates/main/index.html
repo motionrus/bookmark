@@ -8,8 +8,8 @@
 
 <form action="/links/" method="post">
     {% csrf_token %}
-  Please enter URL<br>
-  <input type="text" name="urls" value="{{ url }}">
+    <p>Please enter URL</p><br>
+    {{ form }}
   <input type="submit" value="Submit">
 </form>
 
