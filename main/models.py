@@ -3,10 +3,13 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-class BookMarks(models.Model):
+
+class BookMark(models.Model):
     pub_date = models.DateTimeField('date saved')
     url = models.URLField(max_length=200)
-    url_title = models.CharField(max_length=255)
-    url_text = models.TextField()
-    url_preview = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    text = models.TextField()
+    short_text = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.title

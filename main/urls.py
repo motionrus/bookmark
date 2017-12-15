@@ -2,5 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.list_all_links, name='index'),
+    path('', views.add_link, name='index'),
+    path('<int:number_links>/', views.get_url),
+
 ]
