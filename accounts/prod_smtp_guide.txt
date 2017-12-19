@@ -1,0 +1,15 @@
+Configuring a SMTP Email Service
+First remove the EMAIL_BACKEND from your settings.py, since it defaults to SMTP Email Backend.
+
+Now add the information from your email provider:
+
+It looks like something like this:
+Inside settings.py
+	EMAIL_HOST = 'smtp.sendgrid.net'
+	EMAIL_PORT = 587
+	EMAIL_HOST_USER = 'testsite_app'
+	EMAIL_HOST_PASSWORD = 'mys3cr3tp4ssw0rd'
+	EMAIL_USE_TLS = True
+	DEFAULT_FROM_EMAIL = 'TestSite Team <noreply@example.com>'
+
+	There are many transactional email services out there. SendGrid, MailGun, Mandrill.
