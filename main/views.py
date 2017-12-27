@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import BookMark
+from main.models import BookMark
 from .forms import LinkBookMark
 from django.template import loader
 from django.utils import timezone
 import requests
 from bs4 import BeautifulSoup
-
 from django.urls import reverse
-
+from django.views.generic import ListView
 # Create your views here.
 
 
@@ -18,7 +17,7 @@ def index(request):
     if request.method == 'POST':
         add_link(request)
     last_five_links = BookMark.objects.order_by('-pub_date')[:5]
-    template = loader.get_template('main/index.html')
+    template = loader.get_template('index.html')
     context = {
         'form': form,
         'response_links': last_five_links,
@@ -48,3 +47,5 @@ def add_link(request):
 
 def save_in_db(request):
     pass
+
+

@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,7 @@ ROOT_URLCONF = 'bookmarks.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,7 +67,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bookmarks.wsgi.application'
 
 
-# Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -103,6 +103,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Redirect when you logout , name in urls
+LOGOUT_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'index'
+
+
 
 try:
     from .settings_local import *
