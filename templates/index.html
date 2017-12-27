@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main page</title>
+</head>
+<body>
+
+<form action="/links/" method="post">
+    {% csrf_token %}
+    <p>Please enter URL</p><br>
+    {{ form }}
+  <input type="submit" value="Submit">
+</form>
+
+{% if response_links %}
+    <ul>
+        {% for link in response_links %}
+        <li>
+            <a href="{{ link.url }}">{{ link.title }}</a>
+            <p>{{ link.short_text }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No Links are available.</p>
+{% endif %}
+</body>
+</html>
+{% endblock %}
