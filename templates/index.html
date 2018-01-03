@@ -21,8 +21,10 @@
     <ul>
         {% for link in response_links %}
         <li>
-            <a href="{{ link.url }}">{{ link.title }}</a>
-            <p>{{ link.short_text }}</p>
+            <a href="{{ link.url }}">{{ link.url }}</a><br>
+            <b>{{ link.title }}</b>
+            <p>{{ link.description }}</p>
+            <img src="{{ link.image }}">
         </li>
         {% endfor %}
     </ul>
