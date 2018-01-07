@@ -10,29 +10,35 @@ from django.urls import reverse
 from django.views.generic import ListView
 # Create your views here.
 
+def last_five_links(index):
+    return BookMark.objects.order_by('-pub_date')[index*5:index*5+5]
 
-def index(request):
+def index(request, number_links=0):
     """return last 5 links"""
     if request.method == 'POST':
         if 'url' in request.POST:
             parse_link(request)
         if 'delete_pk_id' in request.POST:
             delete_post(request)
-
     form = LinkBookMark()
-    last_five_links = BookMark.objects.order_by('-pub_date')[:5]
+    link = last_five_links(number_links)
+
+    number_links_dict = {'prev': number_links - 1, 'current': number_links, 'next': number_links + 1}
+    if not last_five_links(number_links + 1):
+        number_links_dict.pop('next')
+
     template = loader.get_template('index.html')
     context = {
         'form': form,
-        'response_links': last_five_links,
+        'response_links': link,
+        'number_links': number_links_dict,
     }
     return HttpResponse(template.render(context, request))
 
 
 def get_url(request, number_links):
-    link = BookMark.objects.get(pk=number_links)
-    format_link = '<h1>{}</h1><p>{}</p>'.format(link.title, link.text)
-    return HttpResponse(format_link)
+
+    return index(request, number_links)
 
 
 def parse_link(request):

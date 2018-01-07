@@ -17,15 +17,26 @@
             <form action="/links/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="delete_pk_id" value="{{ link.id }}">
-                <input type="submit" value="delete">
+                <button type="submit" onclick="return confirm('Точно удаляем?')">Удалить</button>
             </form>
             <a href="{{ link.url }}">{{ link.url }}</a><br>
             <b>{{ link.title }}</b>
             <p>{{ link.description|safe }}</p>
             <img src="{{ link.image }}">
+
         </li>
+
         {% endfor %}
     </ul>
+    {% if number_links.prev >= 0 %}
+        <a href="/links/{{ number_links.prev }}">назад</a>
+        {% endif %}
+
+    <p>{{ number_links.current }}</p>
+
+    {% if number_links.next %}
+    <a href="/links/{{ number_links.next }}">вперед</a>
+        {% endif %}
 {% else %}
     <p>No Links are available.</p>
 {% endif %}
