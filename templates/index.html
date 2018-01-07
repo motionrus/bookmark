@@ -2,28 +2,26 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>main page</title>
-</head>
-<body>
-
 <form action="/links/" method="post">
     {% csrf_token %}
     <p>Please enter URL</p><br>
     {{ form }}
   <input type="submit" value="Submit">
 </form>
+{% load static %}
 
 {% if response_links %}
     <ul>
         {% for link in response_links %}
         <li>
+            <form action="/links/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="delete_pk_id" value="{{ link.id }}">
+                <input type="submit" value="delete">
+            </form>
             <a href="{{ link.url }}">{{ link.url }}</a><br>
             <b>{{ link.title }}</b>
-            <p>{{ link.description }}</p>
+            <p>{{ link.description|safe }}</p>
             <img src="{{ link.image }}">
         </li>
         {% endfor %}
@@ -31,6 +29,4 @@
 {% else %}
     <p>No Links are available.</p>
 {% endif %}
-</body>
-</html>
 {% endblock %}

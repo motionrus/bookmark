@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+</head>
+
 {% block body %}
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
@@ -18,12 +24,13 @@
             </form>
             {% endif %}
           </li>
-           
         </ul>
       </div>
     </div>
   </nav>
-{% endblock %}
 
-{% block content %}
-{% endblock %}
+    {% block content %}
+    {% endblock content %}
+
+{% endblock body%}
+</html>

@@ -13,9 +13,13 @@ from django.views.generic import ListView
 
 def index(request):
     """return last 5 links"""
-    form = LinkBookMark()
     if request.method == 'POST':
-        add_link(request)
+        if 'url' in request.POST:
+            parse_link(request)
+        if 'delete_pk_id' in request.POST:
+            delete_post(request)
+
+    form = LinkBookMark()
     last_five_links = BookMark.objects.order_by('-pub_date')[:5]
     template = loader.get_template('index.html')
     context = {
@@ -31,10 +35,10 @@ def get_url(request, number_links):
     return HttpResponse(format_link)
 
 
-def add_link(request):
+def parse_link(request):
     form = LinkBookMark(request.POST)
     if form.is_valid():
-        url = (form.cleaned_data['url'])
+        url = form.cleaned_data['url']
         r = requests.get(url)
         preview = get_meta_link(url)
         preview['url'] = url
@@ -70,3 +74,7 @@ def save_in_db(request):
     pass
 
 
+def delete_post(request):
+    pk_id = request.POST['delete_pk_id']
+    BookMark.objects.get(pk=int(pk_id)).delete()
+    return True
