@@ -104,6 +104,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Redirect when you logout , name in urls
 LOGOUT_REDIRECT_URL = 'index'
