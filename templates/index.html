@@ -29,14 +29,12 @@
 
         {% endfor %}
     </ul>
-    {% if number_links.prev >= 0 %}
-        <a href="/links/{{ number_links.prev }}">назад</a>
+        {% if page_output.has_previous %}
+        <a href="/links/{{ page_output.previous_page_number }}">назад</a>
         {% endif %}
-
-    <p>{{ number_links.current }}</p>
-
-    {% if number_links.next %}
-    <a href="/links/{{ number_links.next }}">вперед</a>
+    <p>Страница {{ page_output.number }}</p>
+        {% if page_output.has_next %}
+        <a href="/links/{{ page_output.next_page_number }}">вперед</a>
         {% endif %}
 {% else %}
     <p>No Links are available.</p>

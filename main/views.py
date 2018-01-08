@@ -6,34 +6,28 @@ from django.template import loader
 from django.utils import timezone
 import requests
 from bs4 import BeautifulSoup
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.generic import ListView
 # Create your views here.
 
-
-def last_five_links(index):
-    return BookMark.objects.order_by('-pub_date')[index*5:index*5+5]
+DEFAULT_PAGE_SIZE = 5
 
 
-def index(request, number_links=0):
-    """return last 5 links"""
+def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
+    form = LinkBookMark()
     if request.method == 'POST':
         if 'url' in request.POST:
-            parse_link(request)
+            form = parse_link(request)
         if 'delete_pk_id' in request.POST:
             delete_post(request.POST['delete_pk_id'])
-    form = LinkBookMark()
-    link = last_five_links(number_links)
 
-    number_links_dict = {'prev': number_links - 1, 'current': number_links, 'next': number_links + 1}
-    if not last_five_links(number_links + 1):
-        number_links_dict.pop('next')
-
+    page_output = Paginator(BookMark.objects.order_by('-pub_date'), size).page(number_links)
     template = loader.get_template('index.html')
     context = {
         'form': form,
-        'response_links': link,
-        'number_links': number_links_dict,
+        'response_links': page_output.object_list,
+        'page_output': page_output,
     }
     return HttpResponse(template.render(context, request))
 
@@ -54,6 +48,7 @@ def parse_link(request):
         for key in preview:
             print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
+
     return form
 
 
@@ -81,7 +76,7 @@ def get_html(url):
         }
     try:
         r = requests.get(url=url, headers=headers, timeout=10)
-    except requests.exceptions.ConnectTimeout:
+    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
         return ''
     if r.status_code == 200:
         return r.text
