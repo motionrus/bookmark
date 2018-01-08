@@ -39,7 +39,6 @@ def index(request, number_links=0):
 
 
 def get_url(request, number_links):
-
     return index(request, number_links)
 
 
@@ -80,7 +79,10 @@ def get_html(url):
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
         }
-    r = requests.get(url=url, headers=headers)
+    try:
+        r = requests.get(url=url, headers=headers, timeout=10)
+    except requests.exceptions.ConnectTimeout:
+        return ''
     if r.status_code == 200:
         return r.text
 
