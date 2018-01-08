@@ -20,6 +20,7 @@
                 <button type="submit" onclick="return confirm('Точно удаляем?')">Удалить</button>
             </form>
             <a href="{{ link.url }}">{{ link.url }}</a><br>
+            <b>{{ link.site_name }}</b><br>
             <b>{{ link.title }}</b>
             <p>{{ link.description|safe }}</p>
             <img src="{{ link.image }}">
