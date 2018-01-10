@@ -1,15 +1,18 @@
+
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
 
 <div class="container">
 	<form action="/links/" method="post">
 		{% csrf_token %}
 		<div class="row">
     		<div class="col-md-8 mt-3 mb-3">
-    			<label for="validationServer01">Add Link:</label>
+                    {{ form.url.errors }}
+    			    {{ form.url.label_tag }}
     			<div class="row">
 	      			<div class="col-md-10 mb-1">
-	      				{{ form.as_p }}
+	      				{{ form.url }}
 	      			</div>
 	          		<div class="col-md-1">
 	          			<button type="submit" class="btn btn-primary mb-2">Submit</button>
@@ -22,24 +25,41 @@
 </div>
 
 {% if response_links %}
-    <ul>
+<div class="container">
+    <div class="row">
         {% for link in response_links %}
-        <li>
-            <form action="/links/" method="post">
+        <div class="col-md-4">
+            <div class="card">
+            {% if link.image %}
+            <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
+            {% else %}
+            <img class="card-img-top" src="{% static 'img/bookmark.jpg'%}" alt="Card image cap">
+            {% endif %}
+                <form action="/links/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="delete_pk_id" value="{{ link.id }}">
-                <button type="submit" onclick="return confirm('Точно удаляем?') class="btn btn-primary js-create-book"">Удалить</button>
-            </form>
-            <a href="{{ link.url }}">{{ link.url }}</a><br>
-            <b>{{ link.site_name }}</b><br>
-            <b>{{ link.title }}</b>
-            <p>{{ link.description|safe }}</p>
-            <img src="{{ link.image }}">
-
-        </li>
-
+                <button type="submit" class="close"  aria-label="Close">
+                    <div class="circle"><span aria-hidden="true">&times;</span></div>
+                </button>
+                    
+                </form>
+                <div class="card-body">
+                    <h5 class="card-title">{{ link.title }}</h5>
+                    <p class="card-text">{{ link.description|safe }}</p>
+                    <small class="text-muted">{{ link.pub_date }}</small><br>
+                    <a href="{{ link.url }}" class="card-link">
+                    {% if link.site_name %}
+                        {{ link.site_name }}
+                    {% else %}
+                        {{ link.url }}
+                    {% endif %}</a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
+
         {% if page_output.has_previous %}
         <a href="/links/{{ page_output.previous_page_number }}">назад</a>
         {% endif %}

@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views.generic import ListView
 # Create your views here.
 
-DEFAULT_PAGE_SIZE = 5
+DEFAULT_PAGE_SIZE = 6
 
 
 def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
@@ -68,6 +68,7 @@ def get_meta_tags(html):
 
 
 def get_html(url):
+    from requests.exceptions import ConnectionError, ConnectTimeout
     headers = ''
     if 'vk.com' in url:
         # vk.com url is very strange, because without headers is not works
@@ -76,7 +77,7 @@ def get_html(url):
         }
     try:
         r = requests.get(url=url, headers=headers, timeout=10)
-    except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+    except (ConnectTimeout, ConnectionError):
         return ''
     if r.status_code == 200:
         return r.text
