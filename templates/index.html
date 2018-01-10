@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<form action="/links/" method="post">
-    {% csrf_token %}
-    <p>Please enter URL</p><br>
-    {{ form }}
-  <input type="submit" value="Submit">
-</form>
+<div class="container">
+	<form action="/links/" method="post">
+		{% csrf_token %}
+		<div class="row">
+    		<div class="col-md-8 mt-3 mb-3">
+    			<label for="validationServer01">Add Link:</label>
+    			<div class="row">
+	      			<div class="col-md-10 mb-1">
+	      				{{ form.as_p }}
+	      			</div>
+	          		<div class="col-md-1">
+	          			<button type="submit" class="btn btn-primary mb-2">Submit</button>
+    				</div>
+    			</div>
+    			<small id="passwordHelpInline" class="text-muted">For example: https://bookmarks.com</small>
+			</div>
+    	</div>
+    </form>
+</div>
+
 {% if response_links %}
     <ul>
         {% for link in response_links %}

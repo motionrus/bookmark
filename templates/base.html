@@ -3,44 +3,73 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Bookmark</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-</head>
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
 
+</head>
 {% block body %}
     <body>
-      <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <div class="container">
-          <div class="collapse navbar-collapse" id="mainMenu">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-               {% if user.is_authenticated %}
-                <a class="nav-link" href="#">wellcome {{ user.username }}</a>
-                <a class="navbar-brand" href="{% url 'signup' %}">SignUp</a>
-                <a class="dropdown-item" href="#">My account</a>
-                <a class="dropdown-item" href="#">Change password</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
-                {% else %}
-                <form class="form-inline ml-auto">
-                <a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
-                <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Sign up</a>
-                </form>
-                {% endif %}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">BOOKMARKS</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">ГЛАВНАЯ <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">ЗАКЛАДКИ</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ПОКАЗАТЬ</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#">Все</a>
+						<a class="dropdown-item" href="#">Мои</a>
+						<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Прочитанные</a>
+					</div>
+				</li>
+			</ul>
+			<form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск</button>
+			</form>
+			<nav class="navbar navbar-light bg-light">
+			{% if user.is_authenticated %}
+			<span class="navbar-text">
+				Добро пожаловать,
+			</span>
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<a class="dropdown-item" href="#">Моя страница</a>
+				<a class="dropdown-item" href="#">Настройки</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="#">Выход</a>
+			</div>
+			{% else %}
+			<form class="form-inline ml-auto">
+				<a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
+				<a href="{% url 'signup' %}" class="btn btn-primary ml-2">Sign up</a>
+			</form>
+			{% endif %}
+			</nav>
+		</div>
+	</nav>
+
 
     {% block content %}
     {% endblock content %}
-      <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>  <!-- JQUERY HERE -->
+    <!-- Optional JavaScript -->
       <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    {% block javascript %}
-    {% endblock %}
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    {% block javascript %}{% endblock %}
     </body>
 {% endblock body%}
 </html>
