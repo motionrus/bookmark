@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
@@ -30,12 +29,12 @@
         {% for link in response_links %}
         <div class="col-md-4">
             <div class="card">
-            {% if link.image %}
-            <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
-            {% else %}
-            <img class="card-img-top" src="{% static 'img/bookmark.jpg'%}" alt="Card image cap">
-            {% endif %}
                 <form action="/links/" method="post">
+                {% if link.image %}
+                <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
+                {% else %}
+                <img class="card-img-top" src="{% static 'img/bookmark.jpg'%}" alt="Card image cap">
+                {% endif %}
                 {% csrf_token %}
                 <input type="hidden" name="delete_pk_id" value="{{ link.id }}">
                 <button type="submit" class="close"  aria-label="Close">
@@ -60,13 +59,28 @@
     </div>
 </div>
 
-        {% if page_output.has_previous %}
-        <a href="/links/{{ page_output.previous_page_number }}">назад</a>
-        {% endif %}
-    <p>Страница {{ page_output.number }}</p>
-        {% if page_output.has_next %}
-        <a href="/links/{{ page_output.next_page_number }}">вперед</a>
-        {% endif %}
+<div class="container">
+	<nav aria-label="...">
+		<ul class="pagination">
+			<li class="page-item">
+				{% if page_output.has_previous %}
+				<a class="page-link" href="/links/{{ page_output.previous_page_number }}" tabindex="-1">Previous</a>
+				{% endif %}
+			</li>
+
+            <li class="page-item active">
+                <a class="page-link" href="#">Page {{ page_output.number }} of {{ page_output.paginator.num_pages }}
+                <span class="sr-only">(current)</span>
+                </a>
+            </li>
+			<li class="page-item">
+				{% if page_output.has_next %}
+				<a class="page-link" href="/links/{{ page_output.next_page_number }}">Next</a>
+				{% endif %}
+			</li>
+		</ul>
+	</nav>
+</div>
 {% else %}
     <p>No Links are available.</p>
 {% endif %}
