@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.generic import ListView
+from django.contrib.auth.models import User
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
@@ -43,8 +44,12 @@ def parse_link(request):
         html_preview = get_html(url)
         preview = get_meta_tags(html_preview)
         preview['url'] = url
+        current_user = User.objects.get(username=request.user)
+        preview['user'] = current_user
         # logging
-        print('\ttimezone={}'.format(timezone.now()))
+        #print('\ttimezone={}'.format(timezone.now()))
+        #print("!!", request.user)
+        #print("!", User.objects.get(username=request.user))
         for key in preview:
             print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
@@ -81,10 +86,6 @@ def get_html(url):
         return ''
     if r.status_code == 200:
         return r.text
-
-
-def save_in_db(request):
-    pass
 
 
 def delete_post(pk_id):
