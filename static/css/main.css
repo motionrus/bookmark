@@ -1,0 +1,64 @@
+h1 {
+	color: #3f6096;
+}
+
+.navbar.navbar-expand-lg.navbar-light.bg-light {
+	padding: 0rem 1rem;
+}
+
+.dropdown-menu.show {
+	right: 0;
+	left: auto;
+}
+
+.col{
+        background: #0b1a23;
+}
+
+.card{
+	height:100%;
+	
+}
+p {
+	overflow: hidden;
+	height: 95px;
+}
+
+img {
+	height: 200px;
+	object-fit: cover
+
+}
+
+.col-md-4 {
+	margin-bottom: 1rem;
+}
+
+.page-item.active .page-link {
+	background-color: #3f6096;
+	border-color: #3f6096;
+}
+
+.page-link {
+	color: #3f6096;
+}
+
+button.close {
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+	width: 30px;
+	height: 30px;
+	text-shadow: none;
+	background: white;
+}
+
+.circle {
+    width: 30px;
+    height: 30px;
+
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+

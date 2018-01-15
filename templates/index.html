@@ -1,34 +1,87 @@
 {% extends 'base.html' %}
-
 {% block content %}
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>main page</title>
-</head>
-<body>
-
-<form action="/links/" method="post">
-    {% csrf_token %}
-    <p>Please enter URL</p><br>
-    {{ form }}
-  <input type="submit" value="Submit">
-</form>
+<div class="container">
+	<form action="/links/" method="post">
+		{% csrf_token %}
+		<div class="row">
+    		<div class="col-md-8 mt-3 mb-3">
+                    {{ form.url.errors }}
+    			    {{ form.url.label_tag }}
+    			<div class="row">
+	      			<div class="col-md-10 mb-1">
+	      				{{ form.url }}
+	      			</div>
+	          		<div class="col-md-1">
+	          			<button type="submit" class="btn btn-primary mb-2">Submit</button>
+    				</div>
+    			</div>
+    			<small id="passwordHelpInline" class="text-muted">For example: https://bookmarks.com</small>
+			</div>
+    	</div>
+    </form>
+</div>
 
 {% if response_links %}
-    <ul>
+<div class="container">
+    <div class="row">
         {% for link in response_links %}
-        <li>
-            <a href="{{ link.url }}">{{ link.title }}</a>
-            <p>{{ link.short_text }}</p>
-        </li>
+        <div class="col-md-4">
+            <div class="card">
+                <form action="/links/" method="post">
+                {% if link.image %}
+                <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
+                {% else %}
+                <img class="card-img-top" src="{% static 'img/bookmark.jpg'%}" alt="Card image cap">
+                {% endif %}
+                {% csrf_token %}
+                <input type="hidden" name="delete_pk_id" value="{{ link.id }}">
+                <button type="submit" class="close"  aria-label="Close">
+                    <div class="circle"><span aria-hidden="true">&times;</span></div>
+                </button>
+                    
+                </form>
+                <div class="card-body">
+                    <h5 class="card-title">{{ link.title }}</h5>
+                    <p class="card-text">{{ link.description|safe }}</p>
+                    <small class="text-muted">{{ link.pub_date }}</small><br>
+                    <a href="{{ link.url }}" class="card-link">
+                    {% if link.site_name %}
+                        {{ link.site_name }}
+                    {% else %}
+                        {{ link.url }}
+                    {% endif %}</a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
+
+<div class="container">
+	<nav aria-label="...">
+		<ul class="pagination">
+			<li class="page-item">
+				{% if page_output.has_previous %}
+				<a class="page-link" href="/links/{{ page_output.previous_page_number }}" tabindex="-1">Previous</a>
+				{% endif %}
+			</li>
+
+            <li class="page-item active">
+                <a class="page-link" href="#">Page {{ page_output.number }} of {{ page_output.paginator.num_pages }}
+                <span class="sr-only">(current)</span>
+                </a>
+            </li>
+			<li class="page-item">
+				{% if page_output.has_next %}
+				<a class="page-link" href="/links/{{ page_output.next_page_number }}">Next</a>
+				{% endif %}
+			</li>
+		</ul>
+	</nav>
+</div>
 {% else %}
     <p>No Links are available.</p>
 {% endif %}
-</body>
-</html>
 {% endblock %}

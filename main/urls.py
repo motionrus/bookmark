@@ -6,5 +6,5 @@ from main.views import (
 
 urlpatterns = [
     path('', index, name='index'),
-    path('<int:number_links>/', get_url),
+    path('<int:number_links>/', index),
 ]
