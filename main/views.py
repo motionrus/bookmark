@@ -16,14 +16,21 @@ DEFAULT_PAGE_SIZE = 6
 
 
 def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
-    form = LinkBookMark()
-    if request.method == 'POST':
-        if 'url' in request.POST:
-            form = parse_link(request)
-        if 'delete_pk_id' in request.POST:
-            delete_post(request.POST['delete_pk_id'])
 
-    page_output = Paginator(BookMark.objects.order_by('-pub_date'), size).page(number_links)
+    form = LinkBookMark()
+
+    if request.method == 'POST':
+        if request.user.is_authenticated is True:
+            if 'url' in request.POST:
+                form = parse_link(request)
+            elif 'delete_pk_id' in request.POST:
+                delete_post(request.POST['delete_pk_id'])
+        else:
+            print("Non authenticated")
+            return HttpResponseRedirect("/login/")
+
+    page_output = Paginator(
+        BookMark.objects.order_by('-pub_date'), size).page(number_links)
     template = loader.get_template('index.html')
     context = {
         'form': form,
@@ -46,10 +53,6 @@ def parse_link(request):
         preview['url'] = url
         current_user = User.objects.get(username=request.user)
         preview['user'] = current_user
-        # logging
-        #print('\ttimezone={}'.format(timezone.now()))
-        #print("!!", request.user)
-        #print("!", User.objects.get(username=request.user))
         for key in preview:
             print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
