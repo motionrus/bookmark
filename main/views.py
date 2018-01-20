@@ -81,7 +81,7 @@ def parse_link(request):
         html_preview = get_html(url)
         preview = get_meta_tags(html_preview)
         preview['url'] = url
-        current_user = User.objects.get(username=request.user)
+        current_user = User.objects.get(username=request.user.username)
         preview['user'] = current_user
         # for key in preview:
         #     print('\t{}={}'.format(key, preview[key]))
