@@ -2,16 +2,17 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from main.models import BookMark, Word_Analytics
 from main.html_text_parser import get_url_word_analytics
-from .forms import LinkBookMark
+from main.forms import LinkBookMark, Search_Form
 from django.template import loader
 from django.utils import timezone
-import requests
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
 # from django.urls import reverse
 # from django.views.generic import ListView
 from django.contrib.auth.models import User
 
+import requests
+import re
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
@@ -49,11 +50,25 @@ def get_url(request, number_links):
 
 def get_search_results(request):
     template = loader.get_template('search_results.html')
+
+    if request.method == 'POST':
+        _form = Search_Form(request.POST)
+        if _form.is_valid():
+            form_data = _form.cleaned_data
+            search_string = form_data.search_parameters
+        else:
+            print("Nothing to search")
+
+    if search_string is not None:
+        search_string = clean_search_string(search_string)
+        get_searched_bookmarks(search_string)
+
     page_output = Paginator(
         BookMark.objects.order_by('-pub_date'),
         DEFAULT_PAGE_SIZE).page(1)
 
     context = {
+
         'search_results': page_output.object_list,
         'page_output': page_output,
     }
@@ -69,9 +84,22 @@ def save_url_word_analytics(request):
     url_word_map = get_url_word_analytics(last_bookmark.url)
 
     for key in url_word_map.keys():
-        new_word_analytics = Word_Analytics(word=key, frequency=url_word_map.get(key, 0))
+        new_word_analytics = Word_Analytics(
+            word=key, frequency=url_word_map.get(key, 0)
+        )
         new_word_analytics.bookmark_id = last_bookmark.id
         new_word_analytics.save()
+
+
+def get_searched_bookmarks(_search_string):
+    pass
+
+
+def clean_search_string(search_string):
+    search_string_cleaned = re.sub(
+        '[^A-Za-zа-яА-Я]', '', search_string.lower()
+    )
+    return search_string_cleaned
 
 
 def parse_link(request):

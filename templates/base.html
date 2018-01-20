@@ -34,8 +34,9 @@
 					</div>
 				</li>
 			</ul>
-			<form class="form-inline my-2 my-lg-0">
-				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+			<form action="/links/search_results/" method="post" class="form-inline my-2 my-lg-0">
+                {% csrf_token %}
+				<input id="search_param_form" class="form-control mr-sm-2" name="search_parameters" type="search" placeholder="Search" aria-label="Search">
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск</button>
 			</form>
 			<nav class="navbar navbar-light bg-light">
