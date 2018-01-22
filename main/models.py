@@ -25,4 +25,4 @@ class Word_Analytics(models.Model):
     frequency = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.bookmark + self.word
+        return str(self.bookmark) + "||" + str(self.word) + "||" + str(self.frequency)

@@ -36,7 +36,7 @@ def improve_tokenized_text(_tokens):
         clean_tokens = []
         for token in _tokens:
             # Cleaning non-alphabetic characters
-            token_cleaned = re.sub('[^A-Za-zа-яА-Я]', '', token)
+            token_cleaned = re.sub('[^A-Za-zа-яА-Я0-9]', '', token)
 
             if len(token_cleaned) <= 2:
                 pass

@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 
 import requests
 import re
+import operator
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
@@ -50,25 +51,38 @@ def get_url(request, number_links):
 
 def get_search_results(request):
     template = loader.get_template('search_results.html')
+    list_results_to_display = []
+    search_string = ''
 
     if request.method == 'POST':
         _form = Search_Form(request.POST)
         if _form.is_valid():
             form_data = _form.cleaned_data
-            search_string = form_data.search_parameters
+            search_string = form_data.get("search_parameters")
+            if len(search_string) > 0:
+                search_string = clean_search_string(search_string)
+                list_results_to_display = get_searched_bookmarks(
+                    search_string, request.user.username
+                )
+            else:
+                print("Nothing to show")
+
         else:
             print("Nothing to search")
 
-    if search_string is not None:
-        search_string = clean_search_string(search_string)
-        get_searched_bookmarks(search_string)
-
     page_output = Paginator(
-        BookMark.objects.order_by('-pub_date'),
-        DEFAULT_PAGE_SIZE).page(1)
+        list_results_to_display, DEFAULT_PAGE_SIZE
+    ).page(1)
+
+    if len(search_string) > 0 and len(list_results_to_display) > 0:
+        string_to_display = 'Результаты по вашему запросу: \"' + search_string + '\"'
+    elif len(search_string) > 0 and len(list_results_to_display) == 0:
+        string_to_display = "Извините, мы ничего не нашли по вашему запросу: \"" + search_string + '\"'
+    else:
+        string_to_display = "Извините, мы ничего не нашли по вашему запросу"
 
     context = {
-
+        'search_string': string_to_display,
         'search_results': page_output.object_list,
         'page_output': page_output,
     }
@@ -77,7 +91,8 @@ def get_search_results(request):
 
 def save_url_word_analytics(request):
     # Url text analyzer
-    user_bookmarks = BookMark.objects.filter(user=request.user)
+    current_user = User.objects.get(username=request.user.username)
+    user_bookmarks = BookMark.objects.filter(user=current_user)
     # last_bookmark_date = user_bookmarks.aggregate(Max('pub_date'))
     # l = BookMark.objects.get(user=request.user, pub_date=last_bookmark_date)
     last_bookmark = user_bookmarks[len(user_bookmarks) - 1]
@@ -91,14 +106,40 @@ def save_url_word_analytics(request):
         new_word_analytics.save()
 
 
-def get_searched_bookmarks(_search_string):
-    pass
+def get_searched_bookmarks(_search_string, _username):
+    current_user = User.objects.get(username=_username)
+    user_bookmarks = BookMark.objects.filter(user=current_user)
+    bookmark_search_results = {}
+
+    for bookmark in user_bookmarks:
+        for word in _search_string.split():
+
+            results = Word_Analytics.objects.filter(
+                bookmark=bookmark
+            ).filter(
+                word=word
+            )
+            if len(results) > 0:
+                for res in results:
+                    if bookmark.id in bookmark_search_results:
+                        bookmark_search_results[bookmark.id] = bookmark_search_results[bookmark.id] + res.frequency
+                    else:
+                        bookmark_search_results[bookmark.id] = res.frequency
+
+    results_to_display = []
+    if len(bookmark_search_results) > 0:
+        bookmark_search_results_sorted = sorted(bookmark_search_results.items(), key=operator.itemgetter(1), reverse=True)
+        for result in bookmark_search_results_sorted:
+            results_to_display.append(BookMark.objects.get(id=result[0]))
+
+    return results_to_display
 
 
 def clean_search_string(search_string):
     search_string_cleaned = re.sub(
-        '[^A-Za-zа-яА-Я]', '', search_string.lower()
+        '[^A-Za-zа-яА-Я0-9 ]', '', search_string.lower()
     )
+    print(search_string_cleaned)
     return search_string_cleaned
 
 
@@ -139,7 +180,7 @@ def get_html(url):
     if 'vk.com' in url:
         # vk.com url is very strange, because without headers is not works
         headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
+            'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
         }
     try:
         r = requests.get(url=url, headers=headers, timeout=10)

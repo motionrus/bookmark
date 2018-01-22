@@ -2,19 +2,16 @@
 {% block content %}
 {% load static %}
 
-<div class="container">
-{{ search_parameters }}
-</div>
-
 {% if search_results %}
 <div class="container">
+    {{ search_string }}
     <div class="row">
         {% for result in search_results %}
         <div class="col-md-4">
             <div class="card">
                 <form action="/links/" method="post">
                 {% if result.image %}
-                <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
+                <img class="card-img-top" src="{{ result.image }}" alt="Card image cap">
                 {% else %}
                 <img class="card-img-top" src="{% static 'img/bookmark.jpg'%}" alt="Card image cap">
                 {% endif %}
@@ -66,6 +63,8 @@
 </div>
 
 {% else %}
-    <p>We're sorry. No results for today, please, try one more time </p>
+<div class="container">
+    <p>{{ search_string }}</p>
+</div>
 {% endif %}
 {% endblock %}
