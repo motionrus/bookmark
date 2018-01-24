@@ -7,6 +7,7 @@ from django.template import loader
 from django.utils import timezone
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
+from collections import defaultdict
 # from django.urls import reverse
 # from django.views.generic import ListView
 from django.contrib.auth.models import User
@@ -55,20 +56,18 @@ def get_search_results(request):
     search_string = ''
 
     if request.method == 'POST':
-        _form = Search_Form(request.POST)
-        if _form.is_valid():
-            form_data = _form.cleaned_data
-            search_string = form_data.get("search_parameters")
-            if len(search_string) > 0:
-                search_string = clean_search_string(search_string)
-                list_results_to_display = get_searched_bookmarks(
-                    search_string, request.user.username
-                )
+        if request.user.is_authenticated is True:
+            _form = Search_Form(request.POST)
+            if _form.is_valid():
+                form_data = _form.cleaned_data
+                search_string = form_data.get("search_parameters")
+                if len(search_string) > 0:
+                    search_string = clean_search_string(search_string)
+                    list_results_to_display = get_searched_bookmarks(
+                        search_string, request.user
+                    )
             else:
-                print("Nothing to show")
-
-        else:
-            print("Nothing to search")
+                print("Nothing to search")
 
     page_output = Paginator(
         list_results_to_display, DEFAULT_PAGE_SIZE
@@ -106,29 +105,34 @@ def save_url_word_analytics(request):
         new_word_analytics.save()
 
 
-def get_searched_bookmarks(_search_string, _username):
-    current_user = User.objects.get(username=_username)
-    user_bookmarks = BookMark.objects.filter(user=current_user)
-    bookmark_search_results = {}
+def get_searched_bookmarks(_search_string, _user):
+
+    user_bookmarks = BookMark.objects.filter(user=_user)
+    bookmark_search_results = defaultdict(lambda: 0)
 
     for bookmark in user_bookmarks:
-        for word in _search_string.split():
+        results = Word_Analytics.objects.filter(
+            bookmark=bookmark
+        ).filter(
+            word__in=(_search_string.split())
+        )
 
-            results = Word_Analytics.objects.filter(
-                bookmark=bookmark
-            ).filter(
-                word=word
-            )
-            if len(results) > 0:
-                for res in results:
-                    if bookmark.id in bookmark_search_results:
-                        bookmark_search_results[bookmark.id] = bookmark_search_results[bookmark.id] + res.frequency
-                    else:
-                        bookmark_search_results[bookmark.id] = res.frequency
+        if len(results) > 0:
+            for res in results:
+                print(res)
+                if bookmark.id in bookmark_search_results.keys():
+                    bookmark_search_results[bookmark.id] += res.frequency
+                else:
+                    bookmark_search_results[bookmark.id]
 
     results_to_display = []
     if len(bookmark_search_results) > 0:
-        bookmark_search_results_sorted = sorted(bookmark_search_results.items(), key=operator.itemgetter(1), reverse=True)
+        # sort the results of search
+        bookmark_search_results_sorted = sorted(
+            bookmark_search_results.items(), key=operator.itemgetter(1),
+            reverse=True
+        )
+        # add sorted results to a list to display
         for result in bookmark_search_results_sorted:
             results_to_display.append(BookMark.objects.get(id=result[0]))
 
