@@ -9,28 +9,20 @@ from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.views.generic import ListView
-from django.contrib.auth.models import User
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
 
 
 def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
-
     form = LinkBookMark()
-
     if request.method == 'POST':
-        if request.user.is_authenticated is True:
-            if 'url' in request.POST:
-                form = parse_link(request)
-            elif 'delete_pk_id' in request.POST:
-                delete_post(request.POST['delete_pk_id'])
-        else:
-            print("Non authenticated")
-            return HttpResponseRedirect("/login/")
+        if 'url' in request.POST:
+            form = parse_link(request)
+        if 'delete_pk_id' in request.POST:
+            delete_post(request.POST['delete_pk_id'])
 
-    page_output = Paginator(
-        BookMark.objects.order_by('-pub_date'), size).page(number_links)
+    page_output = Paginator(BookMark.objects.order_by('-pub_date'), size).page(number_links)
     template = loader.get_template('index.html')
     context = {
         'form': form,
@@ -51,8 +43,8 @@ def parse_link(request):
         html_preview = get_html(url)
         preview = get_meta_tags(html_preview)
         preview['url'] = url
-        current_user = User.objects.get(username=request.user.username)
-        preview['user'] = current_user
+        # logging
+        print('\ttimezone={}'.format(timezone.now()))
         for key in preview:
             print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
@@ -89,6 +81,10 @@ def get_html(url):
         return ''
     if r.status_code == 200:
         return r.text
+
+
+def save_in_db(request):
+    pass
 
 
 def delete_post(pk_id):
