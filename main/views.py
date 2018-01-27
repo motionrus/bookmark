@@ -21,9 +21,7 @@ DEFAULT_PAGE_SIZE = 6
 
 
 def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
-
     form = LinkBookMark()
-
     if request.method == 'POST':
         if request.user.is_authenticated is True:
             if 'url' in request.POST:
