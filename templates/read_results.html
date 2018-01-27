@@ -2,27 +2,6 @@
 {% block content %}
 {% load static %}
 
-<div class="container">
-	<form action="/links/" method="post">
-		{% csrf_token %}
-		<div class="row">
-    		<div class="col-md-8 mt-3 mb-3">
-                    {{ form.url.errors }}
-    			    {{ form.url.label_tag }}
-    			<div class="row">
-	      			<div class="col-md-10 mb-1">
-	      				{{ form.url }}
-	      			</div>
-	          		<div class="col-md-1">
-	          			<button type="submit" class="btn btn-primary mb-2">Submit</button>
-    				</div>
-    			</div>
-    			<small id="passwordHelpInline" class="text-muted">For example: https://bookmarks.com</small>
-			</div>
-    	</div>
-    </form>
-</div>
-
 {% if response_links %}
 <div class="container">
     <div class="row">

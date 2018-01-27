@@ -23,6 +23,8 @@ DEFAULT_PAGE_SIZE = 6
 def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
 
     form = LinkBookMark()
+    # if request.method == 'GET':
+    #    print("!!!!", request.GET.get('url_button'))
 
     if request.method == 'POST':
         if request.user.is_authenticated is True:
@@ -145,6 +147,45 @@ def clean_search_string(search_string):
     )
     print(search_string_cleaned)
     return search_string_cleaned
+
+
+def read_bookmark(request, bookmark_id=-1):
+
+    if request.method == 'POST':
+
+        if request.user.is_authenticated is True:
+
+            if 'button_url' in request.POST:
+
+                # update all Bookmarks filtered by URL as read
+                bookmarks_to_update = BookMark.objects.filter(
+                    user=request.user.id
+                ).filter(
+                    url=request.POST.get('button_url')
+                ).filter(
+                    isRead=False
+                )
+
+                if len(bookmarks_to_update) > 0:
+                    bookmarks_to_update.update(isRead=True)
+
+    return HttpResponse(status=204)
+
+
+def show_read_bookmarks(request, size=DEFAULT_PAGE_SIZE):
+
+    page_output = Paginator(
+        BookMark.objects.filter(
+            user=request.user.id
+        ).filter(
+            isRead=True
+        ).order_by('-pub_date'), size).page(1)
+    template = loader.get_template('read_results.html')
+    context = {
+        'response_links': page_output.object_list,
+        'page_output': page_output,
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def parse_link(request):

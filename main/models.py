@@ -9,6 +9,7 @@ class BookMark(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=500, default='None')
     image = models.URLField(max_length=200, default='')
+    isRead = models.BooleanField(default=False)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         null=True, blank=True)
