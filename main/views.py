@@ -11,10 +11,11 @@ from collections import defaultdict
 # from django.urls import reverse
 # from django.views.generic import ListView
 from django.contrib.auth.models import User
-
+from django.shortcuts import render
 import requests
 import re
 import operator
+from urllib.error import URLError
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
@@ -26,21 +27,27 @@ def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
         if request.user.is_authenticated is True:
             if 'url' in request.POST:
                 form = parse_link(request)
-                save_url_word_analytics(request)
+                try:
+                    save_url_word_analytics(request)
+                except URLError:
+                    pass
             elif 'delete_pk_id' in request.POST:
                 delete_post(request.POST['delete_pk_id'])
         else:
             print("Non authenticated")
             return HttpResponseRedirect("/login/")
-    current_user = BookMark.objects.filter(user=request.user)
-    page_output = Paginator(
-        current_user.order_by('-pub_date'), size).page(number_links)
+    context = {}
+    if request.user.is_authenticated:
+        current_user = BookMark.objects.filter(user=request.user)
+        page_output = Paginator(
+            current_user.order_by('-pub_date'), size).page(number_links)
+        context = {
+            'form': form,
+            'response_links': page_output.object_list,
+            'page_output': page_output,
+        }
     template = loader.get_template('index.html')
-    context = {
-        'form': form,
-        'response_links': page_output.object_list,
-        'page_output': page_output,
-    }
+
     return HttpResponse(template.render(context, request))
 
 
