@@ -32,9 +32,9 @@ def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
         else:
             print("Non authenticated")
             return HttpResponseRedirect("/login/")
-
+    current_user = BookMark.objects.filter(user=request.user)
     page_output = Paginator(
-        BookMark.objects.order_by('-pub_date'), size).page(number_links)
+        current_user.order_by('-pub_date'), size).page(number_links)
     template = loader.get_template('index.html')
     context = {
         'form': form,
