@@ -192,7 +192,7 @@ def get_html(url):
             'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
         }
     try:
-        r = requests.get(url=url, headers=headers, timeout=10)
+        r = requests.get(url=url, headers=headers, timeout=5)
     except (ConnectTimeout, ConnectionError):
         return ''
     if r.status_code == 200:
