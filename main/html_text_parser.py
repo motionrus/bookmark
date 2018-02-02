@@ -70,7 +70,7 @@ def tokenize(_text):
 
 def get_url_word_analytics(_url):
     print(_url)
-    html = urllib.request.urlopen(_url).read()
+    html = urllib.request.urlopen(_url, timeout=10).read()
     html_text = text_from_html(html)
     word_dict = tokenize(html_text)
     return word_dict
