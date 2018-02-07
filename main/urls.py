@@ -5,4 +5,5 @@ urlpatterns = [
     path('', index, name='index'),
     path('<int:number_links>/', index),
     path('search_results/', get_search_results),
+
 ]

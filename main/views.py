@@ -189,7 +189,7 @@ def get_html(url):
     if 'vk.com' in url:
         # vk.com url is very strange, because without headers is not works
         headers = {
-            'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
         }
     try:
         r = requests.get(url=url, headers=headers, timeout=5)
