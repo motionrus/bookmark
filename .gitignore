@@ -110,3 +110,5 @@ ENV/
 #Pycharm
 .idea/
 
+#Gunicorn
+bookmarks/gunicorn.conf.py
