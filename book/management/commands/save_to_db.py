@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 from bs4 import BeautifulSoup
-from book.models import English
+from book.models import Translate
 import os
 
-FILE = r'extra\Ya---legenda.html'
+FILE = r'extra/Ya---legenda.html'
 
 
 
@@ -19,7 +19,7 @@ def parse():
         russian = russian.replace('\n', ' ').strip().replace('_', '').replace('  ', ' ')
         final_list.append([english, russian])
     for final in final_list:
-        model = English()
+        model = Translate()
         model.english_text = final[0]
         model.russian_text = final[1]
         model.save()
