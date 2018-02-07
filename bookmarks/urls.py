@@ -7,6 +7,7 @@ from accounts import views as accounts_views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    path('english/', include('book.urls')),
     path('admin/', admin.site.urls),
     path('auth/', include('accounts.urls')),
     path('links/', include('main.urls')),

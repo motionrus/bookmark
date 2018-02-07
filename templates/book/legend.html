@@ -1,0 +1,46 @@
+{% extends 'book/index.html' %}
+{% block content %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">EN</th>
+      <th scope="col">RU</th>
+    </tr>
+  </thead>
+  <tbody>
+
+{% for text in page.object_list %}
+    <tr>
+      <td>{{ text.english_text }}</td>
+      <td>{{ text.russian_text }}</td>
+    </tr>
+{% endfor %}
+
+  </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+    <li class="page-item {% if page.number == 1 %}disabled{% endif %}">
+      <a class="page-link" href="{% url 'imlegend' 1 %}" tabindex="-1">Начало</a>
+    </li>
+        {% if page.has_pre_previews %}
+        <li class="page-item"><a class="page-link" href="{% url 'imlegend' page.pre_previous_page_number %}">{{ page.pre_previous_page_number }}</a></li>
+        {% endif %}
+        {% if page.has_previous %}
+            <li class="page-item"><a class="page-link" href="{% url 'imlegend' page.previous_page_number %}">{{ page.previous_page_number }}</a></li>
+        {% endif %}
+        <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+        {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="{% url 'imlegend' page.next_page_number %}">{{ page.next_page_number }}</a></li>
+        {% endif %}
+        {% if page.has_post_next %}
+        <li class="page-item"><a class="page-link" href="{% url 'imlegend' page.post_next_page_number %}">{{ page.post_next_page_number }}</a></li>
+        {% endif %}
+    <li class="page-item {% if page.number == paginator.num_pages %}disabled{% endif %}">
+      <a class="page-link" href="{% url 'imlegend' paginator.num_pages %}">Конец</a>
+    </li>
+  </ul>
+    </ul>
+</nav>
+{% endblock content %}
