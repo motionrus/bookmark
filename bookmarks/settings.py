@@ -23,6 +23,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
+# For work you need install rabbitmq-server
+CELERY_BROKER_URL = 'amqp://localhost'
+
 
 # Application definition
 

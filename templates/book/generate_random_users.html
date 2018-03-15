@@ -1,0 +1,29 @@
+{% extends 'book/index.html' %}
+{% block content %}
+<h1>Django Celery Example</h1>
+<h2>Generate random users</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+    <table>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.date_joined }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+
+{% endblock content %}
