@@ -7,6 +7,7 @@ from django.utils import timezone
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
 from collections import defaultdict
+from django.views.generic.base import TemplateView
 # from django.urls import reverse
 # from django.views.generic import ListView
 from django.contrib.auth.models import User
@@ -21,36 +22,38 @@ from .tasks import save_url_word_analytics
 DEFAULT_PAGE_SIZE = 6
 
 
-def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
+class IndexView(TemplateView):
+    template_name = 'index.html'
+    number_links = 1
+    size = DEFAULT_PAGE_SIZE
     form = LinkBookMark()
-    if request.method == 'POST':
-        if request.user.is_authenticated is True:
-            if 'url' in request.POST:
+
+    def post(self, request,  *args, **kwargs):
+        if self.request.user.is_authenticated:
+            if 'url' in self.request.POST:
                 form = parse_link(request)
                 try:
-                    print(request.user.username)
-                    save_url_word_analytics.delay(request.user.username)
+                    save_url_word_analytics.delay(self.request.user.username)
                 except URLError:
                     pass
             elif 'delete_pk_id' in request.POST:
-                delete_post(request.POST['delete_pk_id'])
+                delete_post(self.request.POST['delete_pk_id'])
+            return HttpResponseRedirect("/")
         else:
             print("Non authenticated")
             return HttpResponseRedirect("/login/")
-    context = {}
-    if request.user.is_authenticated:
-        current_user = BookMark.objects.filter(user=request.user)
-        page_output = Paginator(
-            current_user.order_by('-pub_date'), size).page(number_links)
-        context = {
-            'form': form,
-            'response_links': page_output.object_list,
-            'page_output': page_output,
-        }
-    template = loader.get_template('index.html')
 
-    return HttpResponse(template.render(context, request))
-
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        print(self.request.user.is_authenticated)
+        if self.request.user.is_authenticated:
+            number_links = context['number_links'] if 'number_links' in context else self.number_links
+            current_user = BookMark.objects.filter(user=self.request.user)
+            page_output = Paginator(current_user.order_by('-pub_date'), self.size).page(number_links)
+            context['page_output'] = page_output
+            context['response_links'] = page_output.object_list
+            context['form'] = self.form
+            return context
 
 def get_url(request, number_links):
     return index(request, number_links)
@@ -151,7 +154,6 @@ def parse_link(request):
         # for key in preview:
         #     print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
-
     return form
 
 

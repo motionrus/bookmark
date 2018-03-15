@@ -14,7 +14,8 @@ def save_url_word_analytics(user):
     user_bookmarks = BookMark.objects.filter(user=current_user)
     last_bookmark = user_bookmarks[len(user_bookmarks) - 1]
     url_word_map = get_url_word_analytics(last_bookmark.url)
-
+    with open('test', 'w') as f:
+        pass
     for key in url_word_map.keys():
         new_word_analytics = Word_Analytics(
             word=key, frequency=url_word_map.get(key, 0)
