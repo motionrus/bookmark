@@ -21,7 +21,7 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
-					<a class="nav-link" href="/links/">ГЛАВНАЯ <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="/">ГЛАВНАЯ <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="#">ЗАКЛАДКИ</a>
@@ -36,7 +36,7 @@
 					</div>
 				</li>
 			</ul>
-			<form action="/links/search_results/" method="post" class="form-inline my-2 my-lg-0">
+			<form action="/search_results/" method="post" class="form-inline my-2 my-lg-0">
                 {% csrf_token %}
 				<input id="search_param_form" class="form-control mr-sm-2" name="search_parameters" type="search" placeholder="Search" aria-label="Search">
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск</button>

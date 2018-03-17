@@ -55,9 +55,6 @@ class IndexView(TemplateView):
             context['form'] = self.form
             return context
 
-def get_url(request, number_links):
-    return index(request, number_links)
-
 
 def get_search_results(request):
     template = loader.get_template('search_results.html')
