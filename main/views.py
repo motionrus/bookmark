@@ -44,12 +44,18 @@ class IndexView(TemplateView):
             return HttpResponseRedirect("/login/")
 
     def get_context_data(self, **kwargs):
+        from django.core.paginator import EmptyPage
+        from django.http import Http404
         context = super(IndexView, self).get_context_data(**kwargs)
         print(self.request.user.is_authenticated)
         if self.request.user.is_authenticated:
             number_links = context['number_links'] if 'number_links' in context else self.number_links
             current_user = BookMark.objects.filter(user=self.request.user)
-            page_output = Paginator(current_user.order_by('-pub_date'), self.size).page(number_links)
+            try:
+                page_output = Paginator(current_user.order_by('-pub_date'), self.size).page(number_links)
+            except EmptyPage:
+                raise Http404
+
             context['page_output'] = page_output
             context['response_links'] = page_output.object_list
             context['form'] = self.form
