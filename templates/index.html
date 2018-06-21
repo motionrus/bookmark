@@ -3,7 +3,7 @@
 {% load static %}
 
 <div class="container">
-	<form action="/links/" method="post">
+	<form action="/" method="post">
 		{% csrf_token %}
 		<div class="row">
     		<div class="col-md-8 mt-3 mb-3">
@@ -29,7 +29,7 @@
         {% for link in response_links %}
         <div class="col-md-4">
             <div class="card">
-                <form action="/links/" method="post">
+                <form action="/" method="post">
                 {% if link.image %}
                 <img class="card-img-top" src="{{ link.image }}" alt="Card image cap">
                 {% else %}
@@ -64,7 +64,7 @@
 		<ul class="pagination">
 			<li class="page-item">
 				{% if page_output.has_previous %}
-				<a class="page-link" href="/links/{{ page_output.previous_page_number }}" tabindex="-1">Previous</a>
+				<a class="page-link" href="/{{ page_output.previous_page_number }}" tabindex="-1">Previous</a>
 				{% endif %}
 			</li>
 
@@ -75,7 +75,7 @@
             </li>
 			<li class="page-item">
 				{% if page_output.has_next %}
-				<a class="page-link" href="/links/{{ page_output.next_page_number }}">Next</a>
+				<a class="page-link" href="/{{ page_output.next_page_number }}">Next</a>
 				{% endif %}
 			</li>
 		</ul>

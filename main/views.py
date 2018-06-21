@@ -1,13 +1,13 @@
 # from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from main.models import BookMark, Word_Analytics
-from main.html_text_parser import get_url_word_analytics
 from main.forms import LinkBookMark, Search_Form
 from django.template import loader
 from django.utils import timezone
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
 from collections import defaultdict
+from django.views.generic.base import TemplateView
 # from django.urls import reverse
 # from django.views.generic import ListView
 from django.contrib.auth.models import User
@@ -16,43 +16,50 @@ import requests
 import re
 import operator
 from urllib.error import URLError
+from .tasks import save_url_word_analytics
 # Create your views here.
 
 DEFAULT_PAGE_SIZE = 6
 
 
-def index(request, number_links=1, size=DEFAULT_PAGE_SIZE):
+class IndexView(TemplateView):
+    template_name = 'index.html'
+    number_links = 1
+    size = DEFAULT_PAGE_SIZE
     form = LinkBookMark()
-    if request.method == 'POST':
-        if request.user.is_authenticated is True:
-            if 'url' in request.POST:
+
+    def post(self, request,  *args, **kwargs):
+        if self.request.user.is_authenticated:
+            if 'url' in self.request.POST:
                 form = parse_link(request)
                 try:
-                    save_url_word_analytics(request)
+                    save_url_word_analytics.delay(self.request.user.username)
                 except URLError:
                     pass
             elif 'delete_pk_id' in request.POST:
-                delete_post(request.POST['delete_pk_id'])
+                delete_post(self.request.POST['delete_pk_id'])
+            return HttpResponseRedirect("/")
         else:
             print("Non authenticated")
             return HttpResponseRedirect("/login/")
-    context = {}
-    if request.user.is_authenticated:
-        current_user = BookMark.objects.filter(user=request.user)
-        page_output = Paginator(
-            current_user.order_by('-pub_date'), size).page(number_links)
-        context = {
-            'form': form,
-            'response_links': page_output.object_list,
-            'page_output': page_output,
-        }
-    template = loader.get_template('index.html')
 
-    return HttpResponse(template.render(context, request))
+    def get_context_data(self, **kwargs):
+        from django.core.paginator import EmptyPage
+        from django.http import Http404
+        context = super(IndexView, self).get_context_data(**kwargs)
+        print(self.request.user.is_authenticated)
+        if self.request.user.is_authenticated:
+            number_links = context['number_links'] if 'number_links' in context else self.number_links
+            current_user = BookMark.objects.filter(user=self.request.user)
+            try:
+                page_output = Paginator(current_user.order_by('-pub_date'), self.size).page(number_links)
+            except EmptyPage:
+                raise Http404
 
-
-def get_url(request, number_links):
-    return index(request, number_links)
+            context['page_output'] = page_output
+            context['response_links'] = page_output.object_list
+            context['form'] = self.form
+            return context
 
 
 def get_search_results(request):
@@ -93,21 +100,7 @@ def get_search_results(request):
     return HttpResponse(template.render(context, request))
 
 
-def save_url_word_analytics(request):
-    # Url text analyzer
-    current_user = User.objects.get(username=request.user.username)
-    user_bookmarks = BookMark.objects.filter(user=current_user)
-    # last_bookmark_date = user_bookmarks.aggregate(Max('pub_date'))
-    # l = BookMark.objects.get(user=request.user, pub_date=last_bookmark_date)
-    last_bookmark = user_bookmarks[len(user_bookmarks) - 1]
-    url_word_map = get_url_word_analytics(last_bookmark.url)
 
-    for key in url_word_map.keys():
-        new_word_analytics = Word_Analytics(
-            word=key, frequency=url_word_map.get(key, 0)
-        )
-        new_word_analytics.bookmark_id = last_bookmark.id
-        new_word_analytics.save()
 
 
 def get_searched_bookmarks(_search_string, _user):
@@ -164,7 +157,6 @@ def parse_link(request):
         # for key in preview:
         #     print('\t{}={}'.format(key, preview[key]))
         BookMark(pub_date=timezone.now(), **preview).save()
-
     return form
 
 
@@ -202,3 +194,40 @@ def get_html(url):
 def delete_post(pk_id):
     BookMark.objects.get(pk=pk_id).delete()
     return True
+
+
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.views.generic.edit import FormView
+from django.shortcuts import redirect
+
+from .forms import GenerateRandomUserForm
+from .tasks import create_random_user_accounts
+
+
+class GenerateRandomUserView(FormView):
+    template_name = 'book/generate_random_users.html'
+    form_class = GenerateRandomUserForm
+    initial = {'key': 'value'}
+
+    def form_valid(self, form):
+        total = form.cleaned_data.get('total')
+
+        create_random_user_accounts.delay(total)
+        messages.success(self.request, 'We are generating your random users! Wait a moment and refresh this page.')
+
+        return redirect('generate')
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all().order_by('-date_joined')
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {'form': form, 'users': users})
+
+    def post(self, request, *args, **kwargs):
+        users = User.objects.all().order_by('-date_joined')
+        print(users)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            self.form_valid(form)
+
+        return render(request, self.template_name, {'form': form, 'users': users})

@@ -10,7 +10,7 @@ urlpatterns = [
     path('english/', include('book.urls')),
     path('admin/', admin.site.urls),
     path('auth/', include('accounts.urls')),
-    path('links/', include('main.urls')),
     path('', include('main.urls')),
+    path('rest_api/', include('rest_api.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
