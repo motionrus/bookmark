@@ -122,7 +122,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
+print('STATICFILES_DIRS: ', STATICFILES_DIRS)
 # Redirect when you logout , name in urls
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_REDIRECT_URL = 'index'
