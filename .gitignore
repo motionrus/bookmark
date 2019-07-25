@@ -105,8 +105,11 @@ ENV/
 # mypy
 .mypy_cache/
 
-#Pycharm
+# Pycharm
 .idea/
 
-#Gunicorn
+# Gunicorn
 bookmarks/gunicorn.conf.py
+
+# LocalSettings
+bookmarks/settings_local.py
