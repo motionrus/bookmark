@@ -6,7 +6,7 @@ from rest_framework import routers, serializers, viewsets
 class BookMarkSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BookMark
-        fields = ('pub_date', 'url', 'site_name', 'title', 'description', 'image', 'user')
+        fields = ('pk', 'pub_date', 'url', 'site_name', 'title', 'description', 'image', 'user')
 
 
 class BookMarkViewSet(viewsets.ModelViewSet):

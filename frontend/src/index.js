@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SignIn from "./components/Sign/SignIn";
+import { App } from "@/App";
 
-ReactDOM.render(<SignIn />, document.querySelector("#root"));
+ReactDOM.render(<App />, document.querySelector("#root"));
