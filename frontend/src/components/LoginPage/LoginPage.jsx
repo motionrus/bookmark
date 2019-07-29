@@ -45,18 +45,18 @@ export const LoginPage = (props) => {
                                 },
                                 error => {
                                     setSubmitting(false);
-                                    setStatus(error);
+                                    // FIXME: need update Backend
+                                    setStatus(error.data.non_field_errors[0]);
                                 }
                             );
                     }}
-                >
-                    {(props) =>
+                    render={(props) =>
                         <LoginForm
                             {...props}
                             classes={classes}
                         />
                     }
-                </Formik>
+                />
             </div>
         </Container>
     );
