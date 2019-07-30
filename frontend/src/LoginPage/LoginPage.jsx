@@ -5,11 +5,10 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import {authenticationService} from "@/_services";
-import {LoginForm} from "@/components/LoginPage/LoginForm";
-import {useStyles} from "@/components/LoginPage/style";
+import {LoginForm} from "@/LoginPage/components/LoginForm";
+import {useStyles} from "@/LoginPage/components/style";
 import {Formik} from "formik";
 import * as Yup from "yup";
-
 
 export const LoginPage = (props) => {
     const classes = useStyles();
@@ -60,4 +59,4 @@ export const LoginPage = (props) => {
             </div>
         </Container>
     );
-}
+};
