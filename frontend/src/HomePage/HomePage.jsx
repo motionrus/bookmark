@@ -23,6 +23,12 @@ class HomePage extends React.Component {
 
     handleDeletePost (event) {
         const {currentTarget: {dataset: {pk}}} = event;
+        bookmarkService.deleteBookmark(pk).then(() => this.setState((state) => {
+            const filteredBookmarks = state.bookmarks.filter(
+                bookmark => bookmark.pk !== Number(pk)
+            );
+            return {...state, bookmarks: filteredBookmarks}
+        }))
     }
 
     handleLogout() {
@@ -45,7 +51,6 @@ class HomePage extends React.Component {
                     <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
                         Something here to give the footer a purpose!
                     </Typography>
-                    <TablePagination />
                 </footer>
             </React.Fragment>
         );

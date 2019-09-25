@@ -1,6 +1,13 @@
 from django.urls import path, include
-from .serializers import router
+from rest_framework import routers
+
+from api.views import UserViewSet, BookMarkViewSet
 from rest_framework.authtoken import views
+
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'bookmark', BookMarkViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
