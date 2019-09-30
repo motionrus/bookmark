@@ -5,6 +5,7 @@ import Link from "@material-ui/core/Link"
 import PropTypes from "prop-types"
 import React from "react"
 import {InputLabel} from "@material-ui/core"
+import {history} from "_helpers"
 
 export const LoginForm = ({
   classes,
@@ -60,12 +61,12 @@ export const LoginForm = ({
       </Button>
       <Grid container>
         <Grid item xs>
-          <Link href="#" variant="body2">
+          <Link className={classes.link} variant="body2">
             Forgot password?
           </Link>
         </Grid>
         <Grid item>
-          <Link href="#" variant="body2">
+          <Link variant="body2" className={classes.link} onClick={() => history.push("/register")}>
             {"Don't have an account? Sign Up"}
           </Link>
         </Grid>

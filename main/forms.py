@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class LinkBookMark(forms.Form):
@@ -13,15 +14,12 @@ class LinkBookMark(forms.Form):
     )
 
 
-class Search_Form(forms.Form):
+class SearchForm(forms.Form):
     search_parameters = forms.CharField(
-        label='SearcH',
+        label='Search',
         max_length=100
     )
 
-# https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with-django.html
-from django import forms
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class GenerateRandomUserForm(forms.Form):
     total = forms.IntegerField(

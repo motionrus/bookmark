@@ -9,6 +9,7 @@ class BookMarkViewSet(viewsets.ModelViewSet):
     queryset = BookMark.objects.all()
     serializer_class = BookMarkSerializer
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
