@@ -4,17 +4,27 @@ import CssBaseline from "@material-ui/core/CssBaseline"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Typography from "@material-ui/core/Typography"
 import Container from "@material-ui/core/Container"
-import {authenticationService} from "_services"
 import {Formik} from "formik"
 import * as Yup from "yup"
 import {useStyles} from "components/Forms/style"
 import {LoginForm} from "components/Forms/LoginForm"
+import {getAuthentication, getErrorMessage} from "reduxStore/selectors/auth"
+import {signIn} from "reduxStore/action/auth"
+import {connect} from "react-redux"
 
 export const LoginPage = (props) => {
   const classes = useStyles()
-  if (authenticationService.currentUserValue) {
+  const handleSubmit = ({username, password}, {setStatus, setSubmitting}) => {
+    setStatus("")
+    props.signIn({username, password})
+    setSubmitting(false)
+  }
+  if (props.authenticated) {
     props.history.push("/")
   }
+  // if (props.errorMessage) {
+  //   props.setStatus(props.errorMessage)
+  // }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline/>
@@ -34,21 +44,7 @@ export const LoginPage = (props) => {
             username: Yup.string().required("Username is required"),
             password: Yup.string().required("Password is required"),
           })}
-          onSubmit={({username, password}, {setStatus, setSubmitting}) => {
-            setStatus()
-            authenticationService.login(username, password)
-              .then(
-                user => {
-                  const {from} = props.location.state || {from: {pathname: "/"}}
-                  props.history.push(from)
-                },
-                error => {
-                  setSubmitting(false)
-                  // FIXME: need update Backend
-                  setStatus(error.data.non_field_errors[0])
-                },
-              )
-          }}
+          onSubmit={handleSubmit}
           render={(props) =>
             <LoginForm
               {...props}
@@ -60,3 +56,17 @@ export const LoginPage = (props) => {
     </Container>
   )
 }
+
+const mapStateToProps = (state) => ({
+  errorMessage: getErrorMessage(state),
+  authenticated: getAuthentication(state),
+  state: state
+})
+
+const mapDispatchToProps = {
+  signIn,
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoginPage)

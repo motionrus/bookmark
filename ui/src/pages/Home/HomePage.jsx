@@ -4,10 +4,10 @@ import Typography from "@material-ui/core/Typography"
 import {SearchAppBar} from "components/SearchAppBar/SearchAppBar"
 import {history} from "_helpers"
 import {connect} from "react-redux"
-import {getBookmarks} from "selectors/bookmark"
-import {getAllBookmarks} from "action/bookmark"
+import {getBookmarks} from "reduxStore/selectors/bookmark"
+import {getAllBookmarks} from "reduxStore/action/bookmark"
 import Main from "components/Main/Main"
-import {authenticationService} from "_services/authentication.service"
+import {signOut} from "reduxStore/action/auth"
 
 
 const HomePage = (props) => {
@@ -16,7 +16,7 @@ const HomePage = (props) => {
 
   }, [])
   const handleLogout = () => {
-    authenticationService.logout()
+    props.signOut()
     history.push("/login")
   }
   return (
@@ -36,6 +36,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   getAllBookmarks,
+  signOut,
 }
 
 export default connect(

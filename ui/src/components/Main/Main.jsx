@@ -2,7 +2,7 @@ import Container from "@material-ui/core/Container"
 import Grid from "@material-ui/core/Grid"
 import React from "react"
 import {connect} from "react-redux"
-import {getBookmarks} from "selectors/bookmark"
+import {getBookmarks} from "reduxStore/selectors/bookmark"
 import {useStyles} from "components/Main/style"
 import BookmarkCardContent from "components/CardContent/BookmarkCardContent"
 
