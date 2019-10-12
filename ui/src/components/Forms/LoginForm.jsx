@@ -76,11 +76,14 @@ export const LoginForm = ({
 }
 
 LoginForm.propTypes = {
+  classes: PropTypes.object,
   errors: PropTypes.object,
-  touched: PropTypes.object,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool,
+  status: PropTypes.string,
+  touched: PropTypes.object,
+
 }
 
 LoginForm.defaultProps = {

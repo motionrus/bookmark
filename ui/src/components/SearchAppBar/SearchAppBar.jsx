@@ -7,6 +7,7 @@ import SearchIcon from "@material-ui/icons/Search"
 import IconButton from "@material-ui/core/IconButton"
 import {useStyles} from "./style"
 import {ExitToApp} from "@material-ui/icons"
+import * as PropTypes from "prop-types"
 
 export const SearchAppBar = ({onClick}) => {
   const classes = useStyles()
@@ -38,4 +39,9 @@ export const SearchAppBar = ({onClick}) => {
       </AppBar>
     </div>
   )
+}
+
+
+SearchAppBar.propTypes = {
+  onClick: PropTypes.func,
 }

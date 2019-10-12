@@ -14,6 +14,7 @@ export default function (state = initState(), action) {
     return state.set("authenticated", false)
   case AUTHENTICATION_ERROR:
     return state.set("error", action.payload)
+  default:
+    return state
   }
-  return state
 }

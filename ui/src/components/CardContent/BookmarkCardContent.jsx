@@ -13,17 +13,28 @@ import IconButton from "@material-ui/core/IconButton"
 import Collapse from "@material-ui/core/Collapse"
 import BookmarkIcon from "@material-ui/icons/Bookmark"
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder"
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever"
+import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import * as PropTypes from "prop-types"
 
-
-export const BookmarkCardContent = ({image, title, description, url, pk, deleteBookmark}) => {
+export const BookmarkCardContent = ({
+  deleteBookmark,
+  description,
+  image,
+  pk,
+  title,
+  url,
+}) => {
   const classes = useStyles()
   const [booked, setBooked] = React.useState(false)
   const [expanded, setExpanded] = React.useState(false)
 
-  const handleBooked = () => { setBooked(!booked) }
-  const handleExpandClick = () => { setExpanded(!expanded) }
+  const handleBooked = () => {
+    setBooked(!booked)
+  }
+  const handleExpandClick = () => {
+    setExpanded(!expanded)
+  }
   const handleDelete = (event) => {
     const {currentTarget: {dataset: {pk}}} = event
     deleteBookmark(pk)
@@ -45,14 +56,14 @@ export const BookmarkCardContent = ({image, title, description, url, pk, deleteB
       </CardContent>
       <CardActions disableSpacing>
         <IconButton href={url} color="primary" target="_blank">
-          <ChevronRightIcon />
+          <ChevronRightIcon/>
         </IconButton>
         <IconButton
           color="primary"
           data-pk={pk}
           onClick={handleDelete}
         >
-          <DeleteForeverIcon />
+          <DeleteForeverIcon/>
         </IconButton>
         <IconButton
           aria-label="share"
@@ -97,3 +108,12 @@ export default connect(
   null,
   mapDispatchToProps,
 )(BookmarkCardContent)
+
+BookmarkCardContent.propTypes = {
+  deleteBookmark: PropTypes.func,
+  description: PropTypes.string,
+  image: PropTypes.string,
+  pk: PropTypes.number,
+  title: PropTypes.string,
+  url: PropTypes.string,
+}

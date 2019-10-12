@@ -9,11 +9,12 @@ import LoginPage from "pages/Login/LoginPage"
 import {SignUp} from "pages/Register"
 import {Route, Router} from "react-router-dom"
 
+const HomePageWrapper = (...args) => <HomePage {...args}/>
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <PrivateRoute exact path="/" component={HomePage}/>
+      <PrivateRoute exact path="/" component={HomePageWrapper} />
       <Route path="/login" component={LoginPage}/>
       <Route path="/register" component={SignUp}/>
     </Router>

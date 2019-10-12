@@ -11,16 +11,22 @@ import {LoginForm} from "components/Forms/LoginForm"
 import {getAuthentication, getErrorMessage} from "reduxStore/selectors/auth"
 import {signIn} from "reduxStore/action/auth"
 import {connect} from "react-redux"
+import * as PropTypes from "prop-types"
 
 export const LoginPage = (props) => {
   const classes = useStyles()
+  const {
+    signIn,
+    authenticated,
+    history,
+  } = props
   const handleSubmit = ({username, password}, {setStatus, setSubmitting}) => {
     setStatus("")
-    props.signIn({username, password})
+    signIn({username, password})
     setSubmitting(false)
   }
-  if (props.authenticated) {
-    props.history.push("/")
+  if (authenticated) {
+    history.push("/")
   }
   // if (props.errorMessage) {
   //   props.setStatus(props.errorMessage)
@@ -66,7 +72,15 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   signIn,
 }
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(LoginPage)
+
+
+LoginPage.propTypes = {
+  signIn : PropTypes.func,
+  authenticated: PropTypes.bool,
+  history: PropTypes.object,
+}

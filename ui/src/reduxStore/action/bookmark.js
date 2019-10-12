@@ -1,5 +1,5 @@
 import axios from "axios"
-import {DELETE_BOOKMARK, ERROR, GET_ALL_BOOKMARK} from "reduxStore/constants/constants"
+import {DELETE_BOOKMARK, GET_ALL_BOOKMARK} from "reduxStore/constants/constants"
 import {BOOKMARK} from "reduxStore/constants/urlConstants"
 
 axios.interceptors.request.use(config => {
@@ -15,11 +15,9 @@ axios.interceptors.request.use(config => {
 export function getAllBookmarks() {
   return (dispatch) => axios.get(BOOKMARK)
     .then(response => dispatch({data: response.data, type: GET_ALL_BOOKMARK}))
-
 }
 
 export function deleteBookmark(pk) {
   return (dispatch) => axios.delete(BOOKMARK + pk)
     .then(() => dispatch({pk: Number(pk), type: DELETE_BOOKMARK}))
-
 }

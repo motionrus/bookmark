@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const SignUp = (props) => {
+export const SignUp = () => {
   const classes = useStyles()
 
   return (

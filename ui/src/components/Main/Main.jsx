@@ -5,6 +5,7 @@ import {connect} from "react-redux"
 import {getBookmarks} from "reduxStore/selectors/bookmark"
 import {useStyles} from "components/Main/style"
 import BookmarkCardContent from "components/CardContent/BookmarkCardContent"
+import * as PropTypes from "prop-types"
 
 export const Main = (props) => {
   const {bookmarks} = props
@@ -34,3 +35,7 @@ export default connect(
   mapStateToProps,
   null,
 )(Main)
+
+Main.propTypes = {
+  bookmarks: PropTypes.array,
+}

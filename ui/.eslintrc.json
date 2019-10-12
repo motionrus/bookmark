@@ -23,23 +23,17 @@
   ],
   "rules": {
     "react/jsx-uses-react": "error",
-    "react/jsx-no-bind": "error",
+    "react/no-unused-prop-types": [
+      "error", {
+        "customValidators": [],
+        "skipShapeProps": true
+      }
+    ],
+    "react/destructuring-assignment": ["error", "always"],
     "no-var": "error",
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "quotes": [
-      "error",
-      "double"
-    ],
-    "semi": [
-      "error",
-      "never"
-    ]
+    "indent": ["error", 2],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "double"],
+    "semi": ["error", "never"]
   }
 }
