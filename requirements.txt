@@ -3,6 +3,6 @@ Django>=2.2.3
 psycopg2==2.7.3.2
 beautifulsoup4==4.6.0
 requests>=2.20.0
-nltk==3.4.5
+nltk==3.6.6
 django-widget-tweaks==1.4.1
 djangorestframework>=3.9.1
